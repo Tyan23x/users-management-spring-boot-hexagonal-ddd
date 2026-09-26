@@ -26,8 +26,7 @@ VALUES (
     '00000000-0000-0000-0000-000000000001',
     'Administrador',
     'admin@example.com',
-    '$2a$12$placeholderHashReplaceWithRealBCryptHash',
+    '$2a$12$P/6y8OqFxXcO/04KwI/ihOXZmpzVaHIWEOxZGukpVH/X15OqGK4Vq',
     'ADMIN',
     'ACTIVE'
 );
-

@@ -25,6 +25,23 @@ public class JavaMailEmailSenderAdapter implements EmailSenderPort {
   private static final String MAIL_SMTP_PORT = "mail.smtp.port";
   private static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
   private static final String MAIL_SMTP_STARTTLS = "mail.smtp.starttls.enable";
+  private static final String MAIL_SMTP_STARTTLS_REQUIRED = "mail.smtp.starttls.required";
+  private static final String MAIL_SMTP_SSL_ENABLE = "mail.smtp.ssl.enable";
+  private static final String MAIL_SMTP_SSL_TRUST = "mail.smtp.ssl.trust";
+  private static final String MAIL_SMTP_SOCKET_FACTORY_PORT = "mail.smtp.socketFactory.port";
+  private static final String MAIL_SMTP_SOCKET_FACTORY_CLASS = "mail.smtp.socketFactory.class";
+  private static final String MAIL_SMTP_SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
+  private static final String MAIL_SMTP_CONNECTION_TIMEOUT = "mail.smtp.connectiontimeout";
+  private static final String MAIL_SMTP_TIMEOUT = "mail.smtp.timeout";
+  private static final String MAIL_SMTP_WRITE_TIMEOUT = "mail.smtp.writetimeout";
+
+  private static final String SSL_FACTORY_CLASS = "javax.net.ssl.SSLSocketFactory";
+  private static final String VALUE_TRUE = "true";
+  private static final String VALUE_FALSE = "false";
+  private static final String VALUE_ALL = "*";
+  private static final String TIMEOUT_MS = "10000";
+  private static final int SMTPS_PORT = 465;
+
   private static final String CONTENT_TYPE_HTML = "text/html; charset=UTF-8";
   private static final String CHARSET_UTF8 = "UTF-8";
   private static final String LOG_SENT = "[JavaMailEmailSenderAdapter] correo enviado exitosamente.";
@@ -80,8 +97,21 @@ public class JavaMailEmailSenderAdapter implements EmailSenderPort {
     final Properties properties = new Properties();
     properties.put(MAIL_SMTP_HOST, config.host());
     properties.put(MAIL_SMTP_PORT, String.valueOf(config.port()));
-    properties.put(MAIL_SMTP_AUTH, "true");
-    properties.put(MAIL_SMTP_STARTTLS, "true");
+    properties.put(MAIL_SMTP_AUTH, VALUE_TRUE);
+    properties.put(MAIL_SMTP_SSL_TRUST, VALUE_ALL);
+    properties.put(MAIL_SMTP_CONNECTION_TIMEOUT, TIMEOUT_MS);
+    properties.put(MAIL_SMTP_TIMEOUT, TIMEOUT_MS);
+    properties.put(MAIL_SMTP_WRITE_TIMEOUT, TIMEOUT_MS);
+
+    if (config.port() == SMTPS_PORT) {
+      properties.put(MAIL_SMTP_SSL_ENABLE, VALUE_TRUE);
+      properties.put(MAIL_SMTP_SOCKET_FACTORY_PORT, String.valueOf(SMTPS_PORT));
+      properties.put(MAIL_SMTP_SOCKET_FACTORY_CLASS, SSL_FACTORY_CLASS);
+      properties.put(MAIL_SMTP_SOCKET_FACTORY_FALLBACK, VALUE_FALSE);
+    } else {
+      properties.put(MAIL_SMTP_STARTTLS, VALUE_TRUE);
+      properties.put(MAIL_SMTP_STARTTLS_REQUIRED, VALUE_TRUE);
+    }
     return properties;
   }
 }
